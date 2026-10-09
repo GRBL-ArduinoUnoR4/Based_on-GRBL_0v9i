@@ -1,0 +1,20 @@
+Detail of versions
+	Debugging of Conversion of TableXY GRBL 0.9i with Servo as spindle for Arduino Uno R4 WiFi
+
+Based on
+	Version: R4 GRBL 0.982
+	Date:	08/10/2026
+				
+----------------------------------------
+Version: R4 GRBL Debug 1.0
+
+Date:	09/10/2026
+Author: Jose Luis Gomez Costa
+
+	Debugging of Hang-up
+
+	LIMIT and BUTTONS interruption is NOT enabled
+		AGT1.cpp
+			AGT1_init() returns without initialising Interruption
+
+		

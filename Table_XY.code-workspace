@@ -1,8 +1,8 @@
 {
 	"folders": [
 		{
-			"name": "Table_XY",
-			"path": "../../Table-XY/software/Arduino/UNO R4/Table_XY"
+			"name": "Arduino Uno R4 WiFi",
+			"path": "."
 		}
 	],
 	"settings": {}
