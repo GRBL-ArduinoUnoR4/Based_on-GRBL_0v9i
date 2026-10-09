@@ -20,7 +20,7 @@
 #ifndef version_h
 #define version_h
 
-#define VERSION_NUMBER "R4 GRBL Debug 1.0"
+#define VERSION_NUMBER "R4 GRBL Debug 1.15"
 
 #define VERSION_BUILD_DAY     "09"  //Build Day
 #define VERSION_BUILD_MONTH   "10"  //Build Month

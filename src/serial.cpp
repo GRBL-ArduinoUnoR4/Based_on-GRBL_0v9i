@@ -186,9 +186,22 @@ uint16_t serial_get_rx_buffer_count()
 
 //----------------------------------------------------------------------------
 // Fetches the first byte in the serial read buffer. Called by main program.
-uint8_t serial_read(){
+  uint8_t serial_read(){
   uint16_t tail = serial_rx_buffer_tail; // Temporary serial_rx_buffer_tail (to optimize for volatile)
+  
+  //-----------------------------------------------------------------------------------------
+  // Test point
+  TEST_2_SET;
+
+  //-----------------------------------------------------------------------------------------
+
   if (serial_rx_buffer_head == tail) {
+    //-----------------------------------------------------------------------------------------
+    // Test point
+    TEST_2_CLR;
+  
+    //-----------------------------------------------------------------------------------------
+
     return SERIAL_NO_DATA;
   } else {
     uint8_t data = serial_rx_buffer[tail];
@@ -204,6 +217,12 @@ uint8_t serial_read(){
       }
     #endif
 
+    //-----------------------------------------------------------------------------------------
+    // Test point
+    TEST_2_CLR;
+  
+    //-----------------------------------------------------------------------------------------
+    
     return data;
   }
 }
@@ -226,6 +245,13 @@ void ISR_UART_Reception(void)
 {
   uint8_t data = UART_RX_register;
   uint16_t next_head;
+
+  //-----------------------------------------------------------------------------------------
+  // Test point
+  TEST_1_SET;
+
+  //-----------------------------------------------------------------------------------------
+
 
   // Pick off realtime command characters directly from the serial stream. These characters are
   // not passed into the buffer, but these set system state flag bits for realtime execution.
@@ -259,5 +285,11 @@ void ISR_UART_Reception(void)
   };
 
   R_ICU->IELSR_b[UART_INTERRUPT_EVENT_RXI_IELSRindex].IR = 0;   // Clear Interruption Flag
+
+  //-----------------------------------------------------------------------------------------
+  // Test point
+  TEST_1_CLR;
+
+  //-----------------------------------------------------------------------------------------
 
 }

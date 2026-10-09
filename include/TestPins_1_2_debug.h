@@ -29,5 +29,5 @@ TestPins_1_2_debug.h - Definition of variables for enabling Debug using TEST_1/2
 //    	COOLANT[PROBE] pin IS NOT defined
 //
 
-// #define DEBUG_TEST_1 YES		// comment out for standard operation
-// #define DEBUG_TEST_2 YES		// comment out for standard operation
+#define DEBUG_TEST_1 YES		// comment out for standard operation
+#define DEBUG_TEST_2 YES		// comment out for standard operation

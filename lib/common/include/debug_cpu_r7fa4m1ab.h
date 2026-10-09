@@ -28,4 +28,4 @@
 //    SCI 2: GRBL GUI exchange
 //
 
-// #define SCI_MODE_DEBUG YES		// comment out for Normal operation
+#define SCI_MODE_DEBUG YES		// comment out for Normal operation

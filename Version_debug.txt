@@ -18,3 +18,15 @@ Author: Jose Luis Gomez Costa
 			AGT1_init() returns without initialising Interruption
 
 		
+----------------------------------------
+Version: R4 GRBL Debug 1.15
+
+Date:	09/10/2026
+Author: Jose Luis Gomez Costa
+
+	Debugging of Hang-up
+
+	Checking why £ also hangs-up
+	
+	debug_cpu_r7fa4m1ab.h: For DEBUG Mode	
+	Test Points 1/2 added in serial functions
