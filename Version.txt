@@ -1241,3 +1241,20 @@ Author: Jose Luis Gomez Costa
 			M03 S00 pulse:	640	 usec	GCODE_PENCIL_UP
 
 			Not Inverted
+
+----------------------------------------
+Version: R4 GRBL 0.982
+
+Date:	08/10/2026
+Author: Jose Luis Gomez Costa
+
+	debug_cpu_r7fa4m1ab.h
+		Changed comment text.
+
+	TestPins_1_2_debug.h
+		Definitions for TEST1/2 are separated
+
+	stepper.cpp	
+		Text in comments
+		
+				

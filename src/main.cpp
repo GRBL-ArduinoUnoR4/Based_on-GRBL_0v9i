@@ -51,11 +51,13 @@ void setup(void){
 
   // Initialize system upon power-up.
 
-  #ifdef DEBUG_TEST_1_TEST_2
+  #ifdef DEBUG_TEST_1
   // TEST 1 pin collides with COOLANT MIST pin
   // If used, COOLANT nust be disabled
   debugPinOutputTest_1_init();
+  #endif
 
+  #ifdef DEBUG_TEST_2
   // TEST 2 pin collides with PROBE pin
   // If used, PROBE nust be disabled
   debugPinOutputTest_2_init();

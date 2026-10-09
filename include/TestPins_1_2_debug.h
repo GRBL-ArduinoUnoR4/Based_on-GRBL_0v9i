@@ -17,16 +17,17 @@ TestPins_1_2_debug.h - Definition of variables for enabling Debug using TEST_1/2
   If not, see <http://www.gnu.org/licenses/>.
 */
 
-// Definitions for using Tes1/2 pins
+// Definitions for using Test1[2] pins
 //  If Not defined
 //    NORMAL
-//    	TEST1/2 pins ARE NOT used
-//    	COOLANT and PROBE pins ARE defined
+//    	TEST1[2] pin is NOT used
+//    	COOLANT[PROBE] pin IS defined
 //
 //  If defined
-//    TEST
-//    	TEST1/2 pins ARE used
-//    	COOLANT and PROBE pins ARE NOT defined
+//    TEST_xx
+//    	TEST1[2] pin IS used
+//    	COOLANT[PROBE] pin IS NOT defined
 //
 
-// #define DEBUG_TEST_1_TEST_2 YES		// comment out for standard operation
+// #define DEBUG_TEST_1 YES		// comment out for standard operation
+// #define DEBUG_TEST_2 YES		// comment out for standard operation

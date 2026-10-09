@@ -1,37 +1,44 @@
 # GRBL for Arduino Uno R4 WiFi
 
-This software is the porting of [GRBL 0.9i](https://github.com/misan/grbl-servo/blob/master) from Arduino Uno R3 (ATmegaA328P) to Arduino Uno R4 WiFi (R7FA4M1AB3CFM#AA0).
+This software is the conversion of [GRBL version 0.9i](https://github.com/misan/grbl-servo/blob/master) from Arduino Uno R3 (ATmegaA328P) to Arduino Uno R4 WiFi (R7FA4M1AB3CFM#AA0).
 
-**GRBL 0.9i** is based on GRBL 0.9 but with the spindle functions modified for **only** moving UP or Down (2D Printing) a pencil structure. 
-Therefore it is only applied for Printer-like CNC systems like the one detailed in [4xiDraw](https://www.instructables.com/4xiDraw)
+**GRBL version 0.9i** is based on *GRBL 0.9* but with the *spindle* functions modified for **only** moving UP or Down a pencil structure.  
+Therefore it is only applied for Printer 2D-CNC systems like the one detailed in [4xiDraw](https://www.instructables.com/4xiDraw) .  
+Even-though the development is done for that type of Printer, spindle functions can be modified for a standard PWM Spindle controller.
 
-Even-though the development is done for that type of Printer, it can be modified for a standard PWM Spindle controller.
+Refer to the links for a detailed description of GRBL-Servo or GRBL itself.
 
-Refer to the detailed links for a detailed description of GRBL-Servo or GRBL itself.
+This document will only deal with the specificities of the conversion.
 
-This document will only deal with the specificities of the porting.
+You are assumed to be proficient in GRBL.  
 
-You are assumed to be proficient in GRBL.
+<br>
+<br>
+<br>
 
-### Developent
+## Important Note
 
-**VS Code PlatformIO**: Development, compilation, test, as well as directory format structure.
+See GitHub **Issues** for a list of existing issues.
+<br>
+<br>
+<br>
 
-**Renesas RA e² studio**: EEPROM related functions
+## Developent
 
-**Universal G Code Sender**: For testing the interface
+**VS Code PlatformIO**: Development, compilation, test & debug. Directory format structure follows VS Code and NOT Arduino IDE.  
+**Renesas RA e²studio**: EEPROM related functions.  
+**Universal G Code Sender**: GUI for communicating with Arduino CNC controller.  
+<br>
 
+### Pencil Servo control
+Pencil UP and Down movements are controlled with a simple Servo Motor.  
+Depending on the Servo used, it may be required to adjust the angle and the sense of movement: CW or CCW (i.e. inversion).  
+Servo is PWM controlled, with High pulse defining the angle moved.  
+Depending on the Printer structure and the Servo type, it could be required to adapt the parameters.  
+<br>
+Parameters are defined in the following include file
 
-## Pencil Servo control
-
-Pencil UP and Down movements are controller with a simple Servo Motor.
-
-Depending on the Servo used, it may be required to adjust the movement angle and the sense : CW or CCW
-
-Servo is controlled via PWM, with High pulse defining the angle moved. Depending on the Printer structure and the Servo type, it could be required to adapt the parameters. 
-This is done with the following include file
-
-```Servo control
+````Servo control
 spindle_control.h
 
 Parameters for movement of the Servo (therefore the pencil)
@@ -43,74 +50,144 @@ Parameters for movement of the Servo (therefore the pencil)
 	
 	#define SERVO_PULSE_FREQ_HZ 50
 
-```
+````
+<br>  
 
 **RC_SERVO_INVERT**: defines if the servo movement is CW or CCW
 
-**SERVO_PULSE_FREQ_HZ**: PWM frequency 50 Hz
+**SERVO_PULSE_FREQ_HZ**: PWM frequency  
 
-**SERVO_PULSE_HIGH_US_MIN**: PWM pin high value, minimum:  700 usec
-**SERVO_PULSE_HIGH_US_MIN**: PWM pin high value, maximum: 1250 usec
+            50 Hz  			
+**SERVO_PULSE_HIGH_US_MIN**: PWM pin high value, minimum  
 
-Values depicted are for servo SG92R
+			700 usec.  PWM duty cycle: 3.5%  
+**SERVO_PULSE_HIGH_US_MIN**: PWM pin high value, maximum  
 
-SERVO_PULSE_xxx and RC_SERVO_INVERT will define which movement will be done for moving Up or Down the pencil
+			1250 usec.  PWM duty cycle: 6.25%
+
+Those values are for servo SG92R. 
+<br>
+
+SERVO_PULSE_xxx and RC_SERVO_INVERT will define which movement will be done for moving Up or Down the pencil.  
+<br>
+### Renesas Peripherals in Arduino Uno R4
+Even-though the name of the card Arduino Uno R3 and Arduino Uno R4 might imply a backwards compatibility in both software/hardware, **only** at hardware level this is true.  
+
+Both controllers are completely different, therefore porting from one to another implies a complete re-coding of all the hardware related parts: EEPROM, PWM, Timers, interruptions, etc.  
+<br>
+
+#### Motor Control
+Main motor control interrupt is managed by **GPT Timer 0 32bits**
+
+**Main Step pulse frequency**: Overflow interruption  
+**Delay Direction to step pulse**: If enabled, COMP-A interruption  
+**Step Pulse clear**: COMP-B interruption  
+<br>
+
+
+````Stepper Motor control
+GPT320.cpp
+
+	Initialisation and general feature functions
+
+stepper.cpp
+	ISRinterrupt_Motor_Main(): Stepper motor controls: specific actions on pins, plus GRBL related tasks
+
+````
+<br>
+
+#### Servo control
+Servo system is managed by **GPT Timer 6 16bits**  
+<br>  
+
+
+````Servo control
+spindle_control.cpp
+
+	Initialisation and feature functions
+
+````
+<br>
+
+
+#### LIMIT switches and action BUTTONS
+R3 version deals with the Limits and Buttons using the interrupt capability of the pins they are connected to.  
+In the R4, not all the pins connected to those signals have that capability, therefore it is used the following procedure:  
+
+Limit and Control inputs are checked every msec, called by an Interruption generated by **AGT1 timer**  
+<br>
+
+ ```
+ AGT1.cpp
+ 
+	Initialisation of timer
+	
+	ISRinterrupt_AGT1(): pin control
+	
+ ```
+ <br>
+ 
+Every input signal is checked to be kept Active[Not active] at least a defined minimum time before being declared as Active[Not active] and then behaviour follows the same sequence as in the original R3 program.  
+<br>
+
+#### EEPROM
+R4 Renesas built-in EEPROM only has bulk erase/program, not by byte.  
+Read/Write is made for 1024 bytes.
+
+<br>
+<br>
 
 
 ## GCode creation for Pencil Up/Down movement
 
 For not having to make too complex the task of modifying the GCode for adding the feature of Pencil Up/Down, the following procedure has been defined.
 
-- Creating your GCode:
+1. *Creating your GCode*:
 	- This program is adapted for a 2D printing
 	- No parsing of GCode created with any design program is required.
 	- No specific design program is defined, nor special plug-ins to be added. Any design program is used as it is.
 	- When designing your print, you will define:
 		- **Pencil UP**: Z axis value must be set to **any positive value**
 		- **Pencil DOWN**: Z axis value must be set to **any negative value**
-		- **S parameter**: if added to the Z movement, it will be discarded
+		- **S parameter**: if added to the Z movement, it will be ignored by the R4 program
 	- GCode is completely standard, as generated by the design program.
-- When GCode is transferred to the Arduino controller and it is executed:
-	- First, GCode command line is parsed to detect a Z related command
-	- If detected, it is replaced by a corresponding new GCode command:
+2. *Execution at R4 controller*
+	- When GCode is transferred to the Arduino controller and it is executed
+	- Every GCode command line is parsed to look for **Z** related command
+	- If found, it is replaced by a corresponding new GCode command:
 		- *Z < 0*: Pencil Down, command executed: **M03S00**
 		- *Z > 0*: Pencil Up, command executed: **M05**
-	- If not, command line is executed unmodified
-	
-### Arduino program
+	- If not, original command line is executed unmodified
+<br>
+<br>	
 
-The added functions for executing the detailed process are the following
+## Arduino program
+<br>
+
+### Pencil Up/Down features
+
+The added functions for executing the detailed process are the following  
+<br>
+
 
 ```Pencil control
 pencil.h
 	Parameters for movement control
 	
 pencil.cpp
-	Parsing control, adding the detailed features before transferring control to the GCode command execution engine
-	
+	Parsing control, adding the detailed features before transferring control to the GCode command execution engine	
 ```
+<br>
 
-## Additional features
+### Additional features
 
-### Added line in $M menu
+#### Versioning
 
-New Menu option is added:
-    
-	$P (view Pencil build info)
-This displays the Versioning of the whole program, as defined in *version.h* file
-
-Menu option:
-                   
-	$I (view GRBL general build info)
-
-It will display the original Version data: 	
-	
-### Versioning
-
-For keeping track of the modifications, following files have been created
+For keeping track of the modifications, following files have been created  
+<br>
 
 ```Version control
-version.h
+include/version.h
 	Sets the name and date of the Version compiled
 	
 		#define VERSION_NUMBER "R4 GRBL 0.981"
@@ -118,37 +195,83 @@ version.h
 		#define VERSION_BUILD_DAY     "02"  //Build Day
 		#define VERSION_BUILD_MONTH   "10"  //Build Month
 		#define VERSION_BUILD_YEAR  "2026"  //Build Year
+
 Version.txt
 	text file logging/explaining the changes applied for each version
 ```
+<br>
+At power on, Version information is displayed in the Arduino UNO R4 display.  
 
-At power on, Version information is displayed in the Arduino R4 display
+<br>
 
+#### Added line in $M menu
+
+New Menu option:
+    
+	$P (view Pencil build info)
+This displays the Version of the whole program, as defined in *version.h* file.  
+Example:
+```
+	[ GRBL Pencil R4 GRBL 0.982.20261008 ]
+```
+<br> 
+Menu option:  
+               
+	$I (view GRBL general build info)
+
+It will display the original Version data.  
+Example:  
+```
+	[0.9i.20150620]
+```  
+<br>
+
+#### Added log in GUI display
+
+When a Z command is converted in *Mx* command, the GUI will display an explanation log message.  
+
+Example for a Pencil Down  
+```
+	Added: M03S00 - Original: G01X163Y106Z-1
+```
+<br>
+<br>
 
 ## Test and Debug
 
-For helping on testing and debugging process, the following tools have been added
+For helping on testing and debugging of the program, the following features have been added  
+<br>
 
 ### Hardware Test points
-Hardware pins can be used as Test points, and added to suitable points in the program
+Hardware pins can be used as Test points, and added to suitable points in the program.
+Some of the Test points collide with CNC use.  
+<br>
 
 - Analog connector
-	- Pin 13: Analog4: Selectable as Test1 or Coollant Mist
-	- Pin 14: Analog5: Selectable as Test2 or Probe
+	- Pin 13: Analog4  
+		Selectable as *Test1* or *Coolant Mist*
+	- Pin 14: Analog5  
+		Selectable as *Test2* or *Probe*
 
 - Digital connector
-	- Pin 14: Digital13: always defined as Test3 
-
+	- Pin 14: Digital13  
+		Always defined as *Test3*  
+		It is active in Motor Control interruption routine: *void ISRinterrupt_Motor_Main()* in *stepper.cpp*  
+<br>
 	
 ```Test points
-TestPins_1_2_debug.h
-	Sets TEST1-2 as Test points or normal
+include/TestPins_1_2_debug.h
+	Sets TEST1 / TEST2 as Test points or normal
 	
-		#define DEBUG_TEST_1_TEST_2 YES		// comment out for standard operation
+	// #define DEBUG_TEST_1 YES		// comment out for standard operation
+	// #define DEBUG_TEST_2 YES		// comment out for standard operation
+	
 ```
-If Test1/2 are enabled, the program automatically disconnects Collant and Probe settings, and define as output pins.
+<br>
+If TEST1 and/or TEST2 are enabled, the program automatically disconnects *Coolant* and/or *Probe* features, and define as output pins.
 
-You must add pertaining code to the desired points, using the following *#define*:
+You must add pertaining code to the desired points, using the following defined macros:  
+<br>
 
 ```Test point defines
 TEST_x_SET
@@ -157,3 +280,41 @@ TEST_x_TOGGLE
 	
 	x: 1 / 2 / 3
 ```
+<br>
+
+### Debugging tool
+
+It is possible to use the debugging hardware embedded in the Renesas controller and the VS Code Debug features.  
+The interface between the controller and the VS Code is through the USB serial port. In that case, the communication with the GRBL GUI should be routed through another serial port.  
+<br>
+
+  
+| UART channel | Connector | Mode Normal | Mode Debug |
+| ----------- | ----------- | ----------- | ----------- |
+| SCI 9 | USB |GRBL GUI exchange |Debug exchange |
+| SCI 2 | Digital |Not used | GRBL GUI exchange  |
+
+<br>
+
+| SCI 2 signal | Pin #| Pin name |
+| ----------- | ----------- | ----------- |
+| RX from External | 1 | D0 / RX |
+| TX to External | 2 | D1 / TX |
+
+<br>
+<br>
+
+```Debug
+lib/include/debug_cpu_r7fa4m1ab.h
+
+// #define SCI_MODE_DEBUG YES		// comment out for Normal operation
+
+```
+<br>
+<br>
+
+## Documents
+
+Directory *docs* contains several documents worth looking at.  
+Specially *Table XY pinout UNO R4.ods* describing the full pin-out relating *Renesas CPU/Arduino Uno card/GRBL definition*.  
+
