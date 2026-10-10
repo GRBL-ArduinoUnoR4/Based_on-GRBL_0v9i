@@ -55,5 +55,46 @@ Author: Jose Luis Gomez Costa
 		To be checked that report_status_message(STATUS_OVERFLOW); appears if the line buffer is exceeded.
 			Define a LINE_BUFFER_SIZE as 15
 	
-	NOT TESTED YET
+Test:
+	Same behaviour.
+	Transferred with UGsend
+	? (in TeraTerm) gives: ?<Idle,MPos:101.658,96.866,-1.000,WPos:101.658,96.866,-1.000>
+		When movement should go to: G01 X129 Y135
+	CTRL-X works
+
+	Display:
+		?<Run,MPos:102.496,98.032,-1.000,WPos:102.496,98.032,-1.000>
+		?<Run,MPos:104.416,100.712,-1.000,WPos:104.416,100.712,-1.000>
+		?<Run,MPos:105.270,101.902,-1.000,WPos:105.270,101.902,-1.000>
+		?<Idle,MPos:105.300,101.944,-1.000,WPos:105.300,101.944,-1.000>
+		?<Idle,MPos:105.300,101.944,-1.000,WPos:105.300,101.944,-1.000>
+		?<Idle,MPos:105.300,101.944,-1.000,WPos:105.300,101.944,-1.000>
+		?<Idle,MPos:105.300,101.944,-1.000,WPos:105.300,101.944,-1.000>
+	
+	File without Z
+		Error also
+		?<Run,MPos:131.132,133.180,-1.000,WPos:131.132,133.180,-1.000>
+		?<Run,MPos:132.886,131.686,-1.000,WPos:132.886,131.686,-1.000>
+		?<Idle,MPos:132.922,131.654,-1.000,WPos:132.922,131.654,-1.000>
+		?<Idle,MPos:132.922,131.654,-1.000,WPos:132.922,131.654,-1.000>
+	
+	To be tested:
+		Bypass all the Servo conversion, without any Z command
+		After CTRL-x: 
+			- error: EEPROM read fail. Using defaults
+			- Complete control
+
+
+----------------------------------------
+Version: R4 GRBL Debug 1.3
+
+Date:	10/10/2026
+Author: Jose Luis Gomez Costa
+
+	Behaviour is worse, return to precedent settings
+		See config.h / line 354 and next
+	Build flag commented out: ;-D ARDUINO_LOOP_STACK_SIZE=17000
+
+For any strange reson, the after the modification and the roll-back, the behaviour is completely strange, return to Version 1.5 from GitHub
+
 	
