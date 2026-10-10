@@ -53,8 +53,7 @@ uint8_t gc_execute_line(char *line)
 
   uint8_t execution_status;
 
-
-  while (line[char_counter] != 0) { // Loop until no more g-code words in line.
+   while (line[char_counter] != 0) { // Loop until no more g-code words in line.
 
     // Import the next g-code word, expecting a letter followed by a value.
     // Any possible error will be detected when executing the GCode command line
