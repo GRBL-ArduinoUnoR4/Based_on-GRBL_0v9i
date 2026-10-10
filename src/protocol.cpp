@@ -27,7 +27,7 @@
 #define COMMENT_TYPE_SEMICOLON 2
 
 
-static char line[LINE_BUFFER_SIZE]; // Line to be executed. Zero-terminated.
+static char line[LINE_BUFFER_SIZE + 1]; // Line to be executed. Zero-terminated.
 
 
 // Directs and executes one line of formatted input from protocol_process. While mostly
@@ -93,7 +93,7 @@ void protocol_main_loop()
   // ---------------------------------------------------------------------------------
 
   uint8_t comment = COMMENT_NONE;
-  uint8_t char_counter = 0;
+  uint16_t char_counter = 0;
   uint8_t c;
   for (;;) {
     // Process one line of incoming serial data, as the data becomes available. Performs an

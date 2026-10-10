@@ -30,3 +30,30 @@ Author: Jose Luis Gomez Costa
 	
 	debug_cpu_r7fa4m1ab.h: For DEBUG Mode	
 	Test Points 1/2 added in serial functions
+
+----------------------------------------
+Version: R4 GRBL Debug 1.2
+
+Date:	10/10/2026
+Author: Jose Luis Gomez Costa
+
+	Hang-up: 
+		- In fact the CNC engine seems to loose some commands. Serial Interface keeps working.
+			Increase Serial reception buffer size.
+		- To be also checked: £ also hangs-up
+	
+	serial.cpp / .h:
+		Increase RX_BUFFER_SIZE / TX_BUFFER_SIZE: 1023
+		Verify all indexes related to Buffer are uint16_t
+		Update serial_rx_buffer definition length: serial_rx_buffer[RX_BUFFER_SIZE + 1]
+
+	protocol.cpp / .h:
+		Increase LINE_BUFFER_SIZE: 254
+		Verify all indexes related to Buffer are uint8_t
+		Update line definition length: static char line[LINE_BUFFER_SIZE + 1];
+	
+		To be checked that report_status_message(STATUS_OVERFLOW); appears if the line buffer is exceeded.
+			Define a LINE_BUFFER_SIZE as 15
+	
+	NOT TESTED YET
+	

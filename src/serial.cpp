@@ -22,7 +22,7 @@
 
 #include <grbl.h>
 
-volatile uint8_t serial_rx_buffer[RX_BUFFER_SIZE];
+volatile uint8_t serial_rx_buffer[RX_BUFFER_SIZE + 1];
 volatile char serial_tx_buffer[TX_BUFFER_SIZE + 1];
 
 volatile uint16_t serial_rx_buffer_head = 0;
@@ -180,8 +180,10 @@ void ISR_UART_Transmission(void)
 uint16_t serial_get_rx_buffer_count()
 {
   uint16_t rtail = serial_rx_buffer_tail; // Copy to limit multiple calls to volatile
-  if (serial_rx_buffer_head >= rtail) { return(serial_rx_buffer_head-rtail); }
-  return (RX_BUFFER_SIZE - (rtail-serial_rx_buffer_head));
+
+  if (serial_rx_buffer_head >= rtail) { return(serial_rx_buffer_head - rtail); }
+  
+  return (RX_BUFFER_SIZE - (rtail - serial_rx_buffer_head));
 }
 
 //----------------------------------------------------------------------------
