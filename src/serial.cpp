@@ -180,13 +180,15 @@ void ISR_UART_Transmission(void)
 uint16_t serial_get_rx_buffer_count()
 {
   uint16_t rtail = serial_rx_buffer_tail; // Copy to limit multiple calls to volatile
+
   if (serial_rx_buffer_head >= rtail) { return(serial_rx_buffer_head-rtail); }
   return (RX_BUFFER_SIZE - (rtail-serial_rx_buffer_head));
 }
 
 //----------------------------------------------------------------------------
 // Fetches the first byte in the serial read buffer. Called by main program.
-  uint8_t serial_read(){
+  uint8_t serial_read()
+  {
   uint16_t tail = serial_rx_buffer_tail; // Temporary serial_rx_buffer_tail (to optimize for volatile)
   
   //-----------------------------------------------------------------------------------------

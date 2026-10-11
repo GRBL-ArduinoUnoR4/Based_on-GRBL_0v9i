@@ -98,3 +98,42 @@ Author: Jose Luis Gomez Costa
 			$10=0xFFFF (status report mask:11111111)
 		CTRL-x
 	
+	Checking ? information:
+		From report.cpp
+			Buf: number of active blocks are in the planner buffer
+			RX: serial read buffer status. serial_rx_buffer_head-rtail
+			Lim: displays the LIMITS bits. Review the Full extent of the Limits checking.
+				There seems to have an incoherence on WHICH pin value is detected as ACTIVE (LIMIT found) between the checks with the AGT1 Interruption and limits_get_state() used by ? command report.
+				It should follow same logic as Function_ISRinterrupt_LimitInput
+
+			Check also any incoherence with BUTTONS
+
+		To be checked the outcome with R3 software
+
+
+----------------------------------------
+Version: R4 GRBL Branch Debug 1.33
+
+Date:	11/10/2026
+Author: Jose Luis Gomez Costa
+
+	Working from branch Test-1.15
+	
+	report.cpp:
+		limits_get_state(): Added configuration as Function_ISRinterrupt_LimitInput() Limit behaviour 
+
+
+	Checking ? information:
+		?<Idle,MPos:0.000,0.000,0.000,WPos:0.000,0.000,0.000,Buf:0,RX:0,Lim:000>
+			Lim now correctly reflects Limit pin limits_get_state
+
+		From report.cpp
+			<Run,MPos:77.516,69.848,1.000,WPos:77.516,69.848,1.000,Buf:1,RX:126,Lim:000>
+			<Idle,MPos:77.722,70.034,1.000,WPos:77.722,70.034,1.000,Buf:1,RX:126,Lim:000>
+				Buf: number of active blocks are in the planner buffer
+				RX: serial read buffer status. serial_rx_buffer_head-rtail
+
+			Check also any incoherence with BUTTONS
+			
+		To be checked the outcome with R3 software
+
