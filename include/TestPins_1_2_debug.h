@@ -28,6 +28,24 @@ TestPins_1_2_debug.h - Definition of variables for enabling Debug using TEST_1/2
 //    	TEST1[2] pin IS used
 //    	COOLANT[PROBE] pin IS NOT defined
 //
+#include <Arduino.h>
 
 #define DEBUG_TEST_1 YES		// comment out for standard operation
 #define DEBUG_TEST_2 YES		// comment out for standard operation
+
+//--------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------
+#ifdef MAIN_FILE
+
+// Memories only defined on Main
+    #define MAIN_FILE_DEBUG
+
+#else
+
+    #define MAIN_FILE_DEBUG extern
+
+#endif
+
+MAIN_FILE_DEBUG uint8_t  debug_uint8_1;
+MAIN_FILE_DEBUG uint16_t  debug_uint16_1;
+MAIN_FILE_DEBUG uint32_t  debug_uint32_1;
