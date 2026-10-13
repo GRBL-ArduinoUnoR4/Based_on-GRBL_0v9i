@@ -189,3 +189,17 @@ Author: Jose Luis Gomez Costa
 	serial_.cpp
 		RX_BUFFER_SIZE casted to (uint16_t)
 
+	Not Solved
+
+----------------------------------------
+Version: R4 GRBL Branch Debug 1.37
+
+Date:	13/10/2026
+Author: Jose Luis Gomez Costa
+
+Un incorrect behaviour of the Serial RX buffers, when
+    M2 or M3 are set after a G01 / G00 has been started
+
+This seems to disrupt the transfer of data between the Serial RX and the execution buffer
+
+

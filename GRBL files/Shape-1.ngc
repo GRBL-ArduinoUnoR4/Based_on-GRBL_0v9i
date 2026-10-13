@@ -10,5 +10,6 @@ G90 (Absolute mode, G91 Relative mode)
 G01 X91 Y82 F400
 G01 X191 Y182
 
-M2
+G21
+
 (---------------------------)

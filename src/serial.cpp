@@ -187,26 +187,39 @@ uint16_t serial_get_rx_buffer_count()
 
 //----------------------------------------------------------------------------
 // Fetches the first byte in the serial read buffer. Called by main program.
-  uint8_t serial_read()
-  {
-  uint16_t tail = serial_rx_buffer_tail; // Temporary serial_rx_buffer_tail (to optimize for volatile)
-  
+
+// This allows setting easily a TestPoint, without bothering about possible branches on actual functions
+
+uint8_t serial_read(void)
+{
+  uint8_t function_return;
+
   //-----------------------------------------------------------------------------------------
   // Test point
   TEST_2_SET;
-
   //-----------------------------------------------------------------------------------------
 
-  if (serial_rx_buffer_head == tail) {
-    //-----------------------------------------------------------------------------------------
-    // Test point
-    TEST_2_CLR;
-  
-    //-----------------------------------------------------------------------------------------
+  function_return = function_serial_read();
 
+  //-----------------------------------------------------------------------------------------
+  // Test point
+  TEST_2_CLR;
+  //-----------------------------------------------------------------------------------------
+
+  return function_return;
+}
+
+//Actual function
+uint8_t function_serial_read(void)
+  {
+  uint16_t tail = serial_rx_buffer_tail; // Temporary serial_rx_buffer_tail (to optimize for volatile)
+  uint8_t data;
+
+  if (serial_rx_buffer_head == tail) {
     return SERIAL_NO_DATA;
+
   } else {
-    uint8_t data = serial_rx_buffer[tail];
+    data = serial_rx_buffer[tail];
 
     tail++;
     if (tail == (uint16_t) RX_BUFFER_SIZE) { tail = 0; }
@@ -218,13 +231,7 @@ uint16_t serial_get_rx_buffer_count()
         // UCSR0B |=  (1 << UDRIE0); // Force TX
       }
     #endif
-
-    //-----------------------------------------------------------------------------------------
-    // Test point
-    TEST_2_CLR;
   
-    //-----------------------------------------------------------------------------------------
-    
     return data;
   }
 }
@@ -243,17 +250,29 @@ void serial_reset_read_buffer()
 //----------------------------------------------------------------------------
 // Reception of Serial data
 
+// This allows setting easily a TestPoint, without bothering about possible branches on actual functions
+
 void ISR_UART_Reception(void)
 {
-  uint8_t data = UART_RX_register;
-  uint16_t next_head;
-
   //-----------------------------------------------------------------------------------------
   // Test point
   TEST_1_SET;
-
   //-----------------------------------------------------------------------------------------
 
+  function_ISR_UART_Reception();
+
+  //-----------------------------------------------------------------------------------------
+  // Test point
+  TEST_1_CLR;
+  //-----------------------------------------------------------------------------------------
+}
+
+
+// Actual function
+void function_ISR_UART_Reception(void)
+{
+  uint8_t data = UART_RX_register;
+  uint16_t next_head;
 
   // Pick off realtime command characters directly from the serial stream. These characters are
   // not passed into the buffer, but these set system state flag bits for realtime execution.
@@ -280,18 +299,11 @@ void ISR_UART_Reception(void)
             // UCSR0B |=  (1 << UDRIE0); // Force TX
           }
         #endif
-
-        break;
       }
       //TODO: else alarm on overflow?
+    break;
   };
 
   R_ICU->IELSR_b[UART_INTERRUPT_EVENT_RXI_IELSRindex].IR = 0;   // Clear Interruption Flag
-
-  //-----------------------------------------------------------------------------------------
-  // Test point
-  TEST_1_CLR;
-
-  //-----------------------------------------------------------------------------------------
 
 }

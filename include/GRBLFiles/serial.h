@@ -51,6 +51,7 @@ void serial_write(char *string_data);
 
 // Fetches the first byte in the serial read buffer. Called by main program.
 uint8_t serial_read();
+uint8_t function_serial_read(void);
 
 // Reset and empty data in read buffer. Used by e-stop and reset.
 void serial_reset_read_buffer();
