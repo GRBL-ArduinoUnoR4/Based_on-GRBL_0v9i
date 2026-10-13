@@ -20,9 +20,9 @@
 #ifndef version_h
 #define version_h
 
-#define VERSION_NUMBER "R4 GRBL Branch Debug 1.34"
+#define VERSION_NUMBER "R4 GRBL Branch Debug 1.36"
 
-#define VERSION_BUILD_DAY     "12"  //Build Day
+#define VERSION_BUILD_DAY     "13"  //Build Day
 #define VERSION_BUILD_MONTH   "10"  //Build Month
 #define VERSION_BUILD_YEAR  "2026"  //Build Year
 

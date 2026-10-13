@@ -167,3 +167,25 @@ Author: Jose Luis Gomez Costa
 
 	Set a Point for BreakPoints when status passes from RUN to IDLE
 
+----------------------------------------
+Version: R4 GRBL Branch Debug 1.35
+
+Date:	13/10/2026
+Author: Jose Luis Gomez Costa
+
+	serial_get_rx_buffer_count() returns uint16 and not uint8
+		Print.cpp/h
+			Added	print_uint16_base10(uint16_t n);
+		report.cpp
+			Updated   // Report serial read buffer status
+				Use correct print functions
+
+----------------------------------------
+Version: R4 GRBL Branch Debug 1.36
+
+Date:	13/10/2026
+Author: Jose Luis Gomez Costa
+
+	serial_.cpp
+		RX_BUFFER_SIZE casted to (uint16_t)
+

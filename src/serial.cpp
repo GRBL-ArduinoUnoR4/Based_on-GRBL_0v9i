@@ -22,7 +22,7 @@
 
 #include <grbl.h>
 
-volatile uint8_t serial_rx_buffer[RX_BUFFER_SIZE];
+volatile uint8_t serial_rx_buffer[RX_BUFFER_SIZE + 1];
 volatile char serial_tx_buffer[TX_BUFFER_SIZE + 1];
 
 volatile uint16_t serial_rx_buffer_head = 0;
@@ -182,7 +182,7 @@ uint16_t serial_get_rx_buffer_count()
   uint16_t rtail = serial_rx_buffer_tail; // Copy to limit multiple calls to volatile
 
   if (serial_rx_buffer_head >= rtail) { return(serial_rx_buffer_head-rtail); }
-  return (RX_BUFFER_SIZE - (rtail-serial_rx_buffer_head));
+  return ( (uint16_t)RX_BUFFER_SIZE - (rtail-serial_rx_buffer_head));
 }
 
 //----------------------------------------------------------------------------
@@ -209,7 +209,7 @@ uint16_t serial_get_rx_buffer_count()
     uint8_t data = serial_rx_buffer[tail];
 
     tail++;
-    if (tail == RX_BUFFER_SIZE) { tail = 0; }
+    if (tail == (uint16_t) RX_BUFFER_SIZE) { tail = 0; }
     serial_rx_buffer_tail = tail;
 
     #ifdef ENABLE_XONXOFF
@@ -267,7 +267,7 @@ void ISR_UART_Reception(void)
     default: // Write character to buffer
 
       next_head = serial_rx_buffer_head + 1;
-      if (next_head == RX_BUFFER_SIZE) { next_head = 0; }
+      if (next_head == (uint16_t)RX_BUFFER_SIZE) { next_head = 0; }
 
       // Write data to buffer unless it is full.
       if (next_head != serial_rx_buffer_tail) {

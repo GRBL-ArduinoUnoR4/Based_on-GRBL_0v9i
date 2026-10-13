@@ -492,7 +492,7 @@ void report_realtime_status()
   // Report serial read buffer status
   if (bit_istrue(settings.status_report_mask,BITFLAG_RT_STATUS_SERIAL_RX)) {
     printString(",RX:");
-    print_uint8_base10(serial_get_rx_buffer_count());
+    print_uint16_base10(serial_get_rx_buffer_count());
   }
 
   #ifdef USE_LINE_NUMBERS
