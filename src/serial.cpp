@@ -299,8 +299,10 @@ void function_ISR_UART_Reception(void)
             // UCSR0B |=  (1 << UDRIE0); // Force TX
           }
         #endif
-      }
+      }else{
       //TODO: else alarm on overflow?
+      __NOP();
+      }
     break;
   };
 

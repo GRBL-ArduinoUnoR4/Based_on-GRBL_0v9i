@@ -192,14 +192,63 @@ Author: Jose Luis Gomez Costa
 	Not Solved
 
 ----------------------------------------
-Version: R4 GRBL Branch Debug 1.37
+Version: R4 GRBL Branch Debug 1.38
 
-Date:	13/10/2026
+Date:	14/10/2026
 Author: Jose Luis Gomez Costa
 
 Un incorrect behaviour of the Serial RX buffers, when
-    M2 or M3 are set after a G01 / G00 has been started
+	- M2:
+    	- set after a G01 / G00 has been started
+    	- if it is the last command in the file, file is executed but state of the CNC engine at end is not correct. In this case system seems blocked
+	- M3:
+    	- set after a G01 / G00 has been started
 
 This seems to disrupt the transfer of data between the Serial RX and the execution buffer
 
+
+----------------------------------------
+Version: R4 GRBL Branch Debug 1.39
+
+Date:	15/10/2026
+Author: Jose Luis Gomez Costa
+
+Un incorrect behaviour of the Serial RX buffers, when
+	- M2:
+    	- set after a G01 / G00 has been started
+    	- if it is the last command in the file, file is executed but state of the CNC engine at end is not correct. In this case system seems blocked
+	- M3:
+    	- set after a G01 / G00 has been started
+
+This seems to disrupt the transfer of data between the Serial RX and the execution buffer
+
+
+protocol.cpp:
+	void protocol_main_loop()
+		Added test process for catching sequence command: G0x ... Mx2/3
+		
+
+https://github.com/GRBL-ArduinoUnoR4/ArduinoUnoR4WiFi/issues/1
+	Details the tests / conditions / outcomes
+
+----------------------------------------
+Version: R4 GRBL Branch Debug 1.40
+
+Date:	17/10/2026
+Author: Jose Luis Gomez Costa
+
+	Debug memories transferred to: TestPins_1_2_debug.h
+	
+----------------------------------------
+Version: R4 GRBL Branch Debug 1.41
+
+Date:	17/10/2026
+Author: Jose Luis Gomez Costa
+
+	serila.cpp:
+		void function_ISR_UART_Reception(void): set breakpoint if RX buffer Overflow
+	
+	WRONG: 
+		Completely missed approach: https://github.com/gnea/grbl/blob/master/doc/markdown/interface.md
+		Terminal can not be used if Length > 127 bytes
 

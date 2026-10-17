@@ -38,14 +38,21 @@ TestPins_1_2_debug.h - Definition of variables for enabling Debug using TEST_1/2
 #ifdef MAIN_FILE
 
 // Memories only defined on Main
-    #define MAIN_FILE_DEBUG
+    #define MAIN_FILE_DEBUG volatile
 
 #else
 
-    #define MAIN_FILE_DEBUG extern
+    #define MAIN_FILE_DEBUG extern volatile
 
 #endif
 
 MAIN_FILE_DEBUG uint8_t  debug_uint8_1;
 MAIN_FILE_DEBUG uint16_t  debug_uint16_1;
 MAIN_FILE_DEBUG uint32_t  debug_uint32_1;
+
+//----------------------------------------
+// Test & Debug Memories
+MAIN_FILE_DEBUG uint8_t debug_mode;
+MAIN_FILE_DEBUG uint8_t debug_idx;
+#define DEBUG_VALUE  (5)
+
