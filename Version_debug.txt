@@ -245,10 +245,23 @@ Version: R4 GRBL Branch Debug 1.41
 Date:	17/10/2026
 Author: Jose Luis Gomez Costa
 
-	serila.cpp:
+	serial.cpp:
 		void function_ISR_UART_Reception(void): set breakpoint if RX buffer Overflow
 	
 	WRONG: 
 		Completely missed approach: https://github.com/gnea/grbl/blob/master/doc/markdown/interface.md
 		Terminal can not be used if Length > 127 bytes
 
+----------------------------------------
+Version: R4 GRBL Branch Debug 1.42
+
+Date:	18/10/2026
+Author: Jose Luis Gomez Costa
+
+	serial.cpp:
+		void serial_write(char *string_data):
+			disable TX interruption and Flag if Reset is called
+		Memories transferred to serial.h
+	
+	serial.cpp:
+		#define TX_BUFFER_SIZE = 200

@@ -22,15 +22,6 @@
 
 #include <grbl.h>
 
-volatile uint8_t serial_rx_buffer[RX_BUFFER_SIZE + 1];
-volatile char serial_tx_buffer[TX_BUFFER_SIZE + 1];
-
-volatile uint16_t serial_rx_buffer_head = 0;
-volatile uint16_t serial_rx_buffer_tail = 0;
-
-volatile uint16_t serial_tx_idx;
-volatile boolean serial_tx_busy = false;
-
 #ifdef ENABLE_XONXOFF
   volatile uint8_t flow_ctrl = XON_SENT; // Flow control state variable
 #endif
@@ -127,7 +118,14 @@ void serial_write(char *string_data) {
   // Wait until previous has been transferred
   while (serial_tx_busy) {
     // TODO: Restructure st_prep_buffer() calls to be executed here during a long print.
-    if (sys.rt_exec_state & EXEC_RESET) { return; } // Only check for abort to avoid an endless loop.
+    if (sys.rt_exec_state & EXEC_RESET) { 
+      
+      //Disable TX Interruption
+      UART_INTERRUPT_TXI_DISABLE;  // TXI interruption Disabled
+      serial_tx_busy = false;
+
+      return; 
+    } // Only check for abort to avoid an endless loop.
   }
 
   // Copy to Transfer memory
@@ -160,7 +158,7 @@ void ISR_UART_Transmission(void)
       UART_TX_register = serial_tx_buffer[serial_tx_idx++];
 
     } else{
-      // Wait till last byte has been transferred
+      // Wait till last bit has been transferred
       while ( R_SCI->SSR_b.TEND == 0){__NOP();};
 
       UART_INTERRUPT_TXI_DISABLE;  // TXI interruption Disabled

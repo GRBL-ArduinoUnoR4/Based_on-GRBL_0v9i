@@ -28,7 +28,7 @@
   #define RX_BUFFER_SIZE (127)  // 128
 #endif
 #ifndef TX_BUFFER_SIZE
-  #define TX_BUFFER_SIZE (1000)   // Original: #define TX_BUFFER_SIZE (64)
+  #define TX_BUFFER_SIZE (200)   // Original: #define TX_BUFFER_SIZE (64)
 #endif
 
 #define SERIAL_NO_DATA 0xff
@@ -60,3 +60,30 @@ void serial_reset_read_buffer();
 uint16_t serial_get_rx_buffer_count();
 
 #endif
+
+
+//--------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------
+#ifdef MAIN_FILE
+
+// Memories only defined on Main
+    #define MAIN_FILE_SERIAL
+    volatile uint8_t serial_rx_buffer[RX_BUFFER_SIZE + 1];
+    volatile char serial_tx_buffer[TX_BUFFER_SIZE + 1];
+
+
+#else
+
+    #define MAIN_FILE_SERIAL extern
+    
+    extern volatile uint8_t serial_rx_buffer[];
+    extern volatile char serial_tx_buffer[];
+
+#endif
+
+
+MAIN_FILE_SERIAL volatile uint16_t serial_rx_buffer_head;
+MAIN_FILE_SERIAL volatile uint16_t serial_rx_buffer_tail;
+
+MAIN_FILE_SERIAL volatile uint16_t serial_tx_idx;
+MAIN_FILE_SERIAL volatile boolean serial_tx_busy;
