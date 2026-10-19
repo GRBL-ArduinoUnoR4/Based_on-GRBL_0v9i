@@ -41,6 +41,12 @@
 void report_status_message(uint8_t status_code)
 {
   if (status_code == 0) { // STATUS_OK
+
+    //-----------------------------------------------------------------------------------------
+    // Test point
+    TEST_1_SET;
+    //-----------------------------------------------------------------------------------------
+    
     printString("ok\r\n");
   } else {
     printString("error: ");

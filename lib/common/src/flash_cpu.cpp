@@ -69,7 +69,7 @@ fsp_err_t writeDataFlash(uint8_t *data_src, boolean debug_timming){
 
 	fsp_err_t	action_error;
 
-	// Collides with Probe if(debug_timming)	TEST_2_SET;
+	// Collides with Probe if(debug_timming)	TEST_3_SET;
 
 	action_error = R_FLASH_LP_Erase (&DataFlash_access_ctrl,FLASH_DF_BLOCK_0, 1);
 
@@ -85,7 +85,7 @@ fsp_err_t writeDataFlash(uint8_t *data_src, boolean debug_timming){
 	}
 
 	if(debug_timming){
-		// Collides with Probe TEST_2_CLR;
+		// Collides with Probe TEST_3_CLR;
 		TEST_3_SET;
 	}
 

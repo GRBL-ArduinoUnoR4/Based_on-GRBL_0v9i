@@ -115,6 +115,11 @@ void serial_init()
 
 void serial_write(char *string_data) {
 
+  //-----------------------------------------------------------------------------------------
+  // Test point
+  TEST_2_SET;
+  //-----------------------------------------------------------------------------------------
+
   // Wait until previous has been transferred
   while (serial_tx_busy) {
     // TODO: Restructure st_prep_buffer() calls to be executed here during a long print.
@@ -156,13 +161,20 @@ void ISR_UART_Transmission(void)
     if (serial_tx_buffer[serial_tx_idx] != 0){
       // Send a byte from the buffer
       UART_TX_register = serial_tx_buffer[serial_tx_idx++];
-
     } else{
       // Wait till last bit has been transferred
-      while ( R_SCI->SSR_b.TEND == 0){__NOP();};
+      while ( R_SCI->SSR_b.TEND == 0){
+        __NOP();
+      };
 
       UART_INTERRUPT_TXI_DISABLE;  // TXI interruption Disabled
       serial_tx_busy = false;
+      //-----------------------------------------------------------------------------------------
+      // Test point
+      TEST_1_CLR;
+      TEST_2_CLR;
+      //-----------------------------------------------------------------------------------------      
+      //-----------------------------------------------------------------------------------------
     }
   }
 
@@ -192,17 +204,7 @@ uint8_t serial_read(void)
 {
   uint8_t function_return;
 
-  //-----------------------------------------------------------------------------------------
-  // Test point
-  TEST_2_SET;
-  //-----------------------------------------------------------------------------------------
-
   function_return = function_serial_read();
-
-  //-----------------------------------------------------------------------------------------
-  // Test point
-  TEST_2_CLR;
-  //-----------------------------------------------------------------------------------------
 
   return function_return;
 }
@@ -252,17 +254,7 @@ void serial_reset_read_buffer()
 
 void ISR_UART_Reception(void)
 {
-  //-----------------------------------------------------------------------------------------
-  // Test point
-  TEST_1_SET;
-  //-----------------------------------------------------------------------------------------
-
   function_ISR_UART_Reception();
-
-  //-----------------------------------------------------------------------------------------
-  // Test point
-  TEST_1_CLR;
-  //-----------------------------------------------------------------------------------------
 }
 
 

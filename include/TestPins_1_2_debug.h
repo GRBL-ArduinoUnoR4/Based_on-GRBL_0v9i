@@ -17,6 +17,19 @@ TestPins_1_2_debug.h - Definition of variables for enabling Debug using TEST_1/2
   If not, see <http://www.gnu.org/licenses/>.
 */
 
+//--------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------
+/*
+Definitions for Test Points
+TP  Set                     Clear                   Description
+1   report_status_message   End of Serial TX ISR    Sending of 'ok'
+2   serial_write            End of Serial TX ISR    Sending of string
+3   Start Motor ISR         End Motor ISR           Stepper Motor Pulse
+
+*/
+
+//--------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------
 // Definitions for using Test1[2] pins
 //  If Not defined
 //    NORMAL

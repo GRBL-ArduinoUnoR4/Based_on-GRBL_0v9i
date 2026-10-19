@@ -265,3 +265,15 @@ Author: Jose Luis Gomez Costa
 	
 	serial.cpp:
 		#define TX_BUFFER_SIZE = 200
+
+----------------------------------------
+Version: R4 GRBL Branch Debug 1.43
+
+Date:	19/10/2026
+Author: Jose Luis Gomez Costa
+
+	Setting of TestPoints for Serial TX, see TestPins_1_2_debuh.h
+
+	When sending some Commands, TX string seems to be kept locked about 25 msec (or is Motor ISR?), then it returns both alive.
+	This happends also when TX 'ok' is sent, then it should be the TX string that keeps blocked
+	
