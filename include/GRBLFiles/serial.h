@@ -28,7 +28,7 @@
   #define RX_BUFFER_SIZE (127)  // 128
 #endif
 #ifndef TX_BUFFER_SIZE
-  #define TX_BUFFER_SIZE (200)   // Original: #define TX_BUFFER_SIZE (64)
+  #define TX_BUFFER_SIZE (800)   // Original: #define TX_BUFFER_SIZE (64)
 #endif
 
 #define SERIAL_NO_DATA 0xff

@@ -117,17 +117,26 @@ void serial_write(char *string_data) {
 
   //-----------------------------------------------------------------------------------------
   // Test point
-  TEST_2_SET;
+  TEST_1_SET;
   //-----------------------------------------------------------------------------------------
 
   // Wait until previous has been transferred
   while (serial_tx_busy) {
     // TODO: Restructure st_prep_buffer() calls to be executed here during a long print.
+    
+    //-------------------------------------------------------------------------
+    // TEST_2_SET; // Debug
+    //-------------------------------------------------------------------------
+
     if (sys.rt_exec_state & EXEC_RESET) { 
       
       //Disable TX Interruption
       UART_INTERRUPT_TXI_DISABLE;  // TXI interruption Disabled
       serial_tx_busy = false;
+
+      //-------------------------------------------------------------------------
+      // TEST_2_CLR; // Debug
+      //-------------------------------------------------------------------------
 
       return; 
     } // Only check for abort to avoid an endless loop.
@@ -140,8 +149,11 @@ void serial_write(char *string_data) {
   serial_tx_busy = true;
   serial_tx_idx = 0;
 
-  // Enable Data Register Empty Interrupt to make sure tx-streaming is running
-    EnableTXIinterruption();
+  // Enable Data Register Empty Interrupt to be sure tx-streaming is running
+    EnableTXInterruption();
+    //-------------------------------------------------------------------------
+    TEST_2_CLR; // Debug
+    //-------------------------------------------------------------------------
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -169,11 +181,10 @@ void ISR_UART_Transmission(void)
 
       UART_INTERRUPT_TXI_DISABLE;  // TXI interruption Disabled
       serial_tx_busy = false;
+
       //-----------------------------------------------------------------------------------------
       // Test point
-      TEST_1_CLR;
-      TEST_2_CLR;
-      //-----------------------------------------------------------------------------------------      
+      TEST_1_CLR;   
       //-----------------------------------------------------------------------------------------
     }
   }

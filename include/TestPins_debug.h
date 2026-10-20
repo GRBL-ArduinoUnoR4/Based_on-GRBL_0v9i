@@ -1,5 +1,5 @@
 /*
-TestPins_1_2_debug.h - Definition of variables for enabling Debug using TEST_1/2 pins
+TestPins_debug.h - Definition of variables for enabling Debug using TEST_0/1/2 pins
 
   Copyright (c) 2026 Gomez Costa J.L.
 
@@ -20,29 +20,39 @@ TestPins_1_2_debug.h - Definition of variables for enabling Debug using TEST_1/2
 //--------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------
 /*
+TEST 0: A3
+TEST 1: A4
+TEST 2: A5
+TEST 3: D13
+
 Definitions for Test Points
-TP  Set                     Clear                   Description
-1   report_status_message   End of Serial TX ISR    Sending of 'ok'
-2   serial_write            End of Serial TX ISR    Sending of string
-3   Start Motor ISR         End Motor ISR           Stepper Motor Pulse
+TP  Set                         Clear                           Description
+0   Motor Pulse
+1   serial_write                End of Serial TX ISR            Sending of string
+2   ISRinterrupt_Motor_Main     End of ISRinterrupt_Motor_Main  Start after
+3   ISRinterrupt_Motor_Main     End of ISRinterrupt_Motor_Main  ISR Motor
+
+
 
 */
 
 //--------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------
-// Definitions for using Test1[2] pins
+// Definitions for using Test0[1/2] pins
 //  If Not defined
 //    NORMAL
-//    	TEST1[2] pin is NOT used
-//    	COOLANT[PROBE] pin IS defined
+//    	TEST0[1/2] pin is NOT used
+//    	COOLANT ENABLE [COOLANT / PROBE] pin IS defined
 //
 //  If defined
 //    TEST_xx
-//    	TEST1[2] pin IS used
-//    	COOLANT[PROBE] pin IS NOT defined
+//    	TEST0[1/2] pin IS used
+//    	COOLANT ENABLE [COOLANT / PROBE]pin IS NOT defined
 //
+
 #include <Arduino.h>
 
+#define DEBUG_TEST_0 YES		// comment out for standard operation
 #define DEBUG_TEST_1 YES		// comment out for standard operation
 #define DEBUG_TEST_2 YES		// comment out for standard operation
 

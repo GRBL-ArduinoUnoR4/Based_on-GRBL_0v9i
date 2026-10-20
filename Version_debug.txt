@@ -275,5 +275,70 @@ Author: Jose Luis Gomez Costa
 	Setting of TestPoints for Serial TX, see TestPins_1_2_debuh.h
 
 	When sending some Commands, TX string seems to be kept locked about 25 msec (or is Motor ISR?), then it returns both alive.
-	This happends also when TX 'ok' is sent, then it should be the TX string that keeps blocked
+	This happends also when TX 'ok' is sent without a Motor mouvement, then it should be the TX string that keeps blocked.
+
+
+----------------------------------------
+Version: R4 GRBL Branch Debug 1.44
+
+Date:	19/10/2026
+Author: Jose Luis Gomez Costa
+
+	Changed name: EnableTXIinterruption() -> EnableTXInterruption()
+
+----------------------------------------
+Version: R4 GRBL Branch Debug 1.45
+
+Date:	19/10/2026
+Author: Jose Luis Gomez Costa
+
+	Changed TestPoints
+
+----------------------------------------
+Version: R4 GRBL Branch Debug 1.46
+
+Date:	19/10/2026
+Author: Jose Luis Gomez Costa
+
+	report_grbl_help():
+		Each line is a print
 	
+----------------------------------------
+Version: R4 GRBL Branch Debug 1.47
+
+Date:	20/10/2026
+Author: Jose Luis Gomez Costa
+
+	Added TEST 0 
+		TestPins_1_2_debug.h -> TestPins_debug.h
+		Aded setting for COLLANT ENABLE / TEST 0
+
+Effect:
+	- If '?' is sent and  Motor is OFF, no long pulse is seen.
+		- however: RX:01,Lim:000>
+	- It seems to be when Motor Pulse is generated that the system stops for about 25msec
+
+----------------------------------------
+Version: R4 GRBL Branch Debug 1.48
+
+Date:	20/10/2026
+Author: Jose Luis Gomez Costa
+
+Effect:
+	- If '?' is sent and  Motor is OFF, no long pulse is seen.
+		- however: RX:01,Lim:000>
+	- It seems to be when Motor Pulse is generated that the system stops for about 25msec
+		- But sometimes it re-starts generating pulses
+		- It is stopped during the Motor movement ISR after start, but before generating the Motor pulse.
+		- It passes through busy = false
+		- BUT, it stops before st_go_idle();
+			- But WHY so many IDLE passes?
+	
+----------------------------------------
+Version: R4 GRBL Branch Debug 1.49
+
+Date:	20/10/2026
+Author: Jose Luis Gomez Costa
+
+ISR Pulse Motor:
+	- when not more segments, if no Motor pulse is generated, clear Interruption generation immediately

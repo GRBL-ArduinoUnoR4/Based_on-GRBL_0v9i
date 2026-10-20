@@ -21,7 +21,7 @@
 
 #include "grbl.h"
 
-#ifdef DEBUG_TEST_1
+#if defined(DEBUG_TEST_0) || defined(DEBUG_TEST_1)
 
 // Coolant is NOT USED
 void coolant_init() {__NOP();};

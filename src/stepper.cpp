@@ -110,6 +110,8 @@ typedef struct {
 } stepper_t;
 static stepper_t st;
 
+static volatile boolean pulse_motor_active;    // True: Pulse motor is being generated, wait till Pulse Moxot [X/Y/Z] is cleared before ending
+
 // Step segment ring buffer indices
 static volatile uint8_t segment_buffer_tail;
 static uint8_t segment_buffer_head;
@@ -239,12 +241,17 @@ void st_go_idle()
   // Disable Stepper Driver Interrupt. Allow Stepper Port Reset Interrupt to finish, if active.
   // This MUST be done in IRS CMPB function, for allowing the Step pulse to be ended correctly
   step_pulse_stop = true;
-
   busy = false;
+  if (!pulse_motor_active) GPT320_disable();
 
   // Set stepper driver idle state, disabled or enabled, depending on settings and circumstances.
   bool pin_state = false; // Keep enabled.
   if (((settings.stepper_idle_lock_time != 0xff) || sys.rt_exec_alarm) && sys.state != STATE_HOMING) {
+
+    //----------------------------------------
+    TEST_2_SET;
+    //----------------------------------------
+    
     // Force stepper dwell to lock axes for a defined amount of time to ensure the axes come to a complete
     // stop and not drift from residual inertial forces at the end of the last movement.
     delay_ms(settings.stepper_idle_lock_time);
@@ -310,7 +317,6 @@ void ISRinterrupt_Motor_Main(void){
   //  without having to look at all the return positions
 
   //-------------------------------------------------------------------------
-  // Also modify at the end of function & at return, if it is Set/Clear
   TEST_3_SET; // Debug: Used to time ISR
   //-------------------------------------------------------------------------
 
@@ -318,12 +324,12 @@ void ISRinterrupt_Motor_Main(void){
 
   //-------------------------------------------------------------------------
   TEST_3_CLR; // Debug: Used to time ISR
+  TEST_2_CLR;
   //-------------------------------------------------------------------------
 
 }
 
 // Actual Motor function
-
 void functionISRinterrupt_Motor_Main(void)
 {
   //Clear Interrupt flag
@@ -346,14 +352,19 @@ void functionISRinterrupt_Motor_Main(void)
     st.step_bits = st.step_outbits; // Store out_bits to prevent overwriting.
 
   #else  // Normal operation
+    pulse_motor_active = false;
+
     STEP_PORT_WRITE = (STEP_PORT_READ & ~STEP_MASK) | st.step_outbits;
+
+    if (st.step_outbits)     pulse_motor_active = true;
+
   #endif
 
  busy = true;
 
   __enable_irq(); // Re-enable interrupts to allow Stepper Port Reset Interrupt to fire on-time.
 
-  // NOTE: The remaining code in this ISR will finish before returning to main program.
+  // NOTE: The remaining code in this ISR SHOULD finish before returning to main program.
 
   // If there is no step segment, attempt to pop one from the stepper buffer
   if (st.exec_segment == NULL) {
@@ -364,7 +375,10 @@ void functionISRinterrupt_Motor_Main(void)
 
       #ifndef ADAPTIVE_MULTI_AXIS_STEP_SMOOTHING
         // When AMASS is disabled, set timer prescaler for segments with slow step frequencies (< 250Hz).
+        // NOT CONVERTED !!!!!!!!
+
         TCCR1B = (TCCR1B & ~(0x07<<CS10)) | (st.exec_segment->prescaler<<CS10);
+
       #endif
 
       // Initialize step segment timing per step and load number of steps to execute.
@@ -401,6 +415,7 @@ void functionISRinterrupt_Motor_Main(void)
 
     } else {
       // Segment buffer empty. Shutdown.
+      
       st_go_idle();
       bit_true_atomic(sys.rt_exec_state,EXEC_CYCLE_STOP); // Flag main program for cycle end
       return; // Nothing to do but exit.
@@ -477,10 +492,6 @@ void functionISRinterrupt_Motor_Main(void)
 
 // Step Pulse ended
 void ISRinterrupt_Motor_StepPulseEnd(void) {
-  //-------------------------------------------------------------------------
-  // Also modify at the end of function, if it is Set/Clear
-  // TEST_1_SET; // Debug: Used to time ISR
-  //-------------------------------------------------------------------------
 
   //Pulse high Ended, Clear Motor step Pulse
   R_GPT0->GTST_b.TCFB = 0;                // Clear Comp-B Flag
@@ -495,11 +506,7 @@ void ISRinterrupt_Motor_StepPulseEnd(void) {
     // Stop Timer GPT320
     GPT320_disable();
   }
-
-  //-------------------------------------------------------------------------
-  // Also modify at the end of function
-  // TEST_1_CLR; // Debug: Used to time ISR
-  //-------------------------------------------------------------------------
+  pulse_motor_active = false;
 
 }
 
@@ -513,10 +520,6 @@ void ISRinterrupt_Motor_StepPulseEnd(void) {
 
   // Delay between Direction signal and Step Pulse signal
 void ISRinterrupt_Motor_DelayEnd(void) {
-  //-------------------------------------------------------------------------
-  // Also modify at the end of function, if it is Set/Clear
-  // TEST_1_SET; // Debug: Used to time ISR
-  //-------------------------------------------------------------------------
 
   //Delay Direction-Step ended, set Motor step Pulse
   R_GPT0->GTST_b.TCFA = 0;                // Clear Comp-A Flag
@@ -526,11 +529,6 @@ void ISRinterrupt_Motor_DelayEnd(void) {
   // STEP_PORT_WRITE = st.step_bits; // Begin step pulse.
 
   STEP_PORT_WRITE = (STEP_PORT_READ & ~STEP_MASK) | st.step_bits;
-
-  //-------------------------------------------------------------------------
-  // Also modify at the end of function
-  // TEST_1_CLR; // Debug: Used to time ISR
-  //-------------------------------------------------------------------------
 
 }
 #endif
