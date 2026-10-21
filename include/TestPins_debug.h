@@ -29,10 +29,8 @@ Definitions for Test Points
 TP  Set                         Clear                           Description
 0   Motor Pulse
 1   serial_write                End of Serial TX ISR            Sending of string
-2   ISRinterrupt_Motor_Main     End of ISRinterrupt_Motor_Main  Start after
+2   st_go_idle()                End of ISRinterrupt_Motor_Main  25msec access??
 3   ISRinterrupt_Motor_Main     End of ISRinterrupt_Motor_Main  ISR Motor
-
-
 
 */
 

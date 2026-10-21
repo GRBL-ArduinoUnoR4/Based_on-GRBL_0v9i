@@ -261,7 +261,7 @@ void serial_reset_read_buffer()
 //----------------------------------------------------------------------------
 // Reception of Serial data
 
-// This allows setting easily a TestPoint, without bothering about possible branches on actual functions
+// This allows setting easily a TestPoint, without bothering about possible branches on actual function
 
 void ISR_UART_Reception(void)
 {

@@ -50,10 +50,15 @@
 */
 
 // For R4: 48MHz = 16MHz * 3
+/*
 #define AMASS_LEVEL1 ((F_CPU * 3)/(8000)) // Over-drives ISR (x2). Defined as F_CPU/(Cutoff frequency in Hz)
 #define AMASS_LEVEL2 ((F_CPU * 3)/(4000)) // Over-drives ISR (x4)
 #define AMASS_LEVEL3 ((F_CPU * 3)/(2000)) // Over-drives ISR (x8)
+*/
 
+#define AMASS_LEVEL1 (F_CPU/(3 * 8000)) // Over-drives ISR (x2). Defined as F_CPU/(Cutoff frequency in Hz)
+#define AMASS_LEVEL2 (F_CPU/(3 * 4000)) // Over-drives ISR (x4)
+#define AMASS_LEVEL3 (F_CPU/(3 * 2000)) // Over-drives ISR (x8)
 
 
 // Stores the planner block Bresenham algorithm execution data for the segments in the segment
@@ -193,7 +198,8 @@ static st_prep_t prep;
   are shown and defined in the above illustration.
 */
 
-
+//-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
 // Stepper state initialization. Cycle should only start if the st.cycle_start flag is
 // enabled. Startup init and limits call this function but shouldn't start the cycle.
 void st_wake_up()
@@ -234,7 +240,8 @@ void st_wake_up()
   }
 }
 
-
+//-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
 // Stepper shutdown
 void st_go_idle()
 {
@@ -312,6 +319,8 @@ void st_go_idle()
 // int8 variables and update position counters only when a segment completes. This can get complicated
 // with probing and homing cycles that require true real-time positions.
 
+//-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
 void ISRinterrupt_Motor_Main(void){
   // This is only for allowing to correctly generate the Test Point,
   //  without having to look at all the return positions
@@ -326,8 +335,9 @@ void ISRinterrupt_Motor_Main(void){
   TEST_3_CLR; // Debug: Used to time ISR
   TEST_2_CLR;
   //-------------------------------------------------------------------------
-
 }
+
+
 
 // Actual Motor function
 void functionISRinterrupt_Motor_Main(void)
@@ -477,6 +487,8 @@ void functionISRinterrupt_Motor_Main(void)
 
 }
 
+//-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
 
 /* The Stepper Port Reset Interrupt: Timer320 CMPB interrupt handles the falling edge of the step
    pulse. This should always trigger before the next Timer320 OVF interrupt and ALWAYS
@@ -533,7 +545,8 @@ void ISRinterrupt_Motor_DelayEnd(void) {
 }
 #endif
 
-//-------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
 // Generates the step and direction port invert masks used in the Stepper Interrupt Driver.
 void st_generate_step_dir_invert_masks()
 {
@@ -546,7 +559,8 @@ void st_generate_step_dir_invert_masks()
   }
 }
 
-//-------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
 // Reset and clear stepper subsystem variables
 void st_reset()
 {
@@ -570,7 +584,9 @@ void st_reset()
   DIRECTION_PORT_WRITE = (DIRECTION_PORT_READ & ~DIRECTION_MASK) | dir_port_invert_mask;
 }
 
-//-------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+
 // Initialize and start the stepper motor subsystem
 void stepper_init()
 {
@@ -582,7 +598,8 @@ void stepper_init()
 
 }
 
-//-------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
 // Called by planner_recalculate() when the executing block is updated by the new plan.
 void st_update_plan_block_parameters()
 {
@@ -593,7 +610,8 @@ void st_update_plan_block_parameters()
   }
 }
 
-
+//-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
 /* Prepares step segment buffer. Continuously called from main program.
 
    The segment buffer is an intermediary buffer interface between the execution of steps
@@ -875,7 +893,8 @@ void st_prep_buffer()
       }
 
       // R3 Original: prep_segment->cycles_per_tick = cycles;
-      prep_segment->cycles_per_tick = cycles * 0.2; // Period / 5
+      // Hangs-up: prep_segment->cycles_per_tick = cycles * 0.2; // Period / 5
+      prep_segment->cycles_per_tick = cycles; // Period
 
     #else
 		// TODO if no AMASS is used
@@ -927,7 +946,8 @@ void st_prep_buffer()
   }
 }
 
-
+//-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
 // Called by realtime status reporting to fetch the current speed being executed. This value
 // however is not exactly the current speed, but the speed computed in the last step segment
 // in the segment buffer. It will always be behind by up to the number of segment blocks (-1)

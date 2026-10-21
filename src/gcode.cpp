@@ -74,7 +74,7 @@ static uint8_t gc_check_same_position(float *pos_a, float *pos_b)
 
 // Original name: uint8_t gc_execute_line(char *line)
 
-uint8_t gc_execute_line_actual(char *line)
+uint8_t gc_execute_line_actual(char *line_exec)
 {
   /* -------------------------------------------------------------------------------------
      STEP 1: Initialize parser block struct and copy current g-code state modes. The parser
@@ -112,10 +112,10 @@ uint8_t gc_execute_line_actual(char *line)
   uint8_t int_value = 0;
   uint16_t mantissa = 0;
 
-  while (line[char_counter] != 0) { // Loop until no more g-code words in line.
+  while (line_exec[char_counter] != 0) { // Loop until no more g-code words in line.
 
     // Import the next g-code word, expecting a letter followed by a value. Otherwise, error out.
-    letter = line[char_counter];
+    letter = line_exec[char_counter];
     if((letter < 'A') || (letter > 'Z')) { 
       __NOP();    // This adds to debugging
       __NOP();
@@ -124,7 +124,7 @@ uint8_t gc_execute_line_actual(char *line)
         } // [Expected word letter]
         
     char_counter++;
-    if (!read_float(line, &char_counter, &value)) { FAIL(STATUS_BAD_NUMBER_FORMAT); } // [Expected word value]
+    if (!read_float(line_exec, &char_counter, &value)) { FAIL(STATUS_BAD_NUMBER_FORMAT); } // [Expected word value]
 
     // Convert values to smaller uint8 significand and mantissa values for parsing this word.
     // NOTE: Mantissa is multiplied by 100 to catch non-integer command values. This is more

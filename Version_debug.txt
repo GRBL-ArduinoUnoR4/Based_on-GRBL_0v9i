@@ -342,3 +342,59 @@ Author: Jose Luis Gomez Costa
 
 ISR Pulse Motor:
 	- when not more segments, if no Motor pulse is generated, clear Interruption generation immediately
+
+----------------------------------------
+Version: R4 GRBL Branch Debug 1.50
+
+Date:	21/10/2026
+Author: Jose Luis Gomez Costa
+
+uint8_t gc_execute_line(char *line)
+	Change the name of the parameter to line_exec, it is the same of the static memory.
+
+----------------------------------------
+Version: R4 GRBL Branch Debug 1.51
+
+Date:	21/10/2026
+Author: Jose Luis Gomez Costa
+
+----------------------------------------
+Version: R4 GRBL Branch Debug 1.52
+
+Date:	21/10/2026
+Author: Jose Luis Gomez Costa
+
+	stepper.cpp
+		AMASS_LEVELx as for R3
+
+	stepper.cpp:
+		void st_prep_buffer()
+      		Changed: prep_segment->cycles_per_tick = cycles * 0.2; // Period / 5 for original R3:    	prep_segment->cycles_per_tick = cycles; // Period
+
+
+----------------------------------------
+Version: R4 GRBL Branch Debug 1.53
+
+Date:	21/10/2026
+Author: Jose Luis Gomez Costa
+
+	stepper.cpp
+		AMASS_LEVELx as for R3
+
+	stepper.cpp:
+		void st_prep_buffer()
+      		Backtrac: for testing:
+				prep_segment->cycles_per_tick = cycles * 0.2; // Period / 5
+	
+		It blocks.
+
+----------------------------------------
+Version: R4 GRBL Branch Debug 1.54
+
+Date:	21/10/2026
+Author: Jose Luis Gomez Costa
+
+	stepper.cpp:
+		void st_prep_buffer()
+      		Changed: prep_segment->cycles_per_tick = cycles * 0.2; // Period / 5 for original R3:    	prep_segment->cycles_per_tick = cycles; // Period
+
