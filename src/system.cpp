@@ -118,7 +118,6 @@ uint8_t system_check_safety_door_ajar()
 void system_execute_startup(char *line)
 {
   uint8_t n;
-  
   for (n=0; n < N_STARTUP_LINE; n++) {
     if (!(settings_read_startup_line(n, line))) {
       report_status_message(STATUS_SETTING_READ_FAIL);

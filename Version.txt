@@ -1254,3 +1254,17 @@ Author: Jose Luis Gomez Costa
 	stepper.cpp	
 		Text in comments
 
+----------------------------------------
+Version: R4 GRBL 0.990
+
+Date:	21/10/2026
+Author: Jose Luis Gomez Costa
+
+	Solved Hanging:
+		stepper.cpp:
+			void st_prep_buffer()
+				Changed: prep_segment->cycles_per_tick = cycles * 0.2; // Period / 5 for original R3: prep_segment->cycles_per_tick = cycles; //Period
+	
+	Limits/Control re-Enabled
+	
+
