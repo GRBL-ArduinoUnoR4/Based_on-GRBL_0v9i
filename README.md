@@ -3,12 +3,15 @@
 This software converts [GRBL version 0.9i](https://github.com/misan/grbl-servo/blob/master) from _Arduino Uno R3_ (_ATmegaA328P_) to _Arduino Uno R4 WiFi_ (_R7FA4M1AB3CFM#AA0_).
 
 **GRBL version 0.9i** is based on *GRBL 0.9* but with the *spindle* functions modified for **only** moving UP or Down a pencil structure.  
-Therefore it is only applied for Printer 2D-CNC systems like the one detailed in [4xiDraw](https://www.instructables.com/4xiDraw) .  
+Therefore it is only applied for Printer 2D-CNC systems like the one detailed in [4xiDraw](https://www.instructables.com/4xiDraw).  
 Even-though the development is done for that type of Printer, spindle functions can be modified for a standard PWM Spindle controller.
 
 Refer to the links for a detailed description of GRBL-Servo or GRBL itself.  
 - GRBL [Version 0.9 parameter description](https://honingmill.fandom.com/wiki/Configuring_Grbl_v0.9)  
 - Interface GRBL to Computer [GUI](https://github.com/gnea/grbl/blob/master/doc/markdown/interface.md)  
+  
+<br>  
+<br> 
 
 This document will only deal with the specificities of the conversion for GRBL version 0.9i, checkout the details described in **General** repository.
 
@@ -16,16 +19,19 @@ This document will only deal with the specificities of the conversion for GRBL v
 <br>
 <br>
 
-## Important Note
+
+# Important Note
 
 See GitHub **Issues** for a list of existing issues.
 <br>
 <br>
 <br>
 
-## Pencil control
 
-### Pencil Servo control
+# Pencil control
+<br>
+
+## Pencil Servo control
 Pencil UP and Down movements are controlled with a simple Servo Motor.  
 Depending on the Servo used, it may be required to adjust the angle and the sense of movement: CW or CCW (i.e. make an inversion).  
 Servo is PWM controlled, with High pulse defining the angle moved.  
@@ -66,7 +72,7 @@ Those values are for servo SG92R.
 SERVO_PULSE_xxx and RC_SERVO_INVERT will define which movement will be done for moving Up or Down the pencil.  
 <br>
 
-### Pencil program features
+## Pencil program features
 
 The added functions for executing the detailed process are the following  
 <br>
@@ -80,7 +86,7 @@ pencil.cpp
 	Parsing control, adding the detailed features before transferring control to the GCode command execution engine	
 ```
 <br>
-### GCode creation for Pencil Up/Down movement
+## GCode creation for Pencil Up/Down movement
 
 For not having to make too complex the task of modifying the GCode for adding Pencil Up/Down feature, the following procedure has been defined.
 
@@ -104,9 +110,9 @@ For not having to make too complex the task of modifying the GCode for adding Pe
 <br>
 <br>
 
-## Additional features
+# Additional features
 
-### Added line in $M menu
+## Added line in $M menu
 
 New Menu option:
     
@@ -128,7 +134,7 @@ Example:
 ```  
 <br>
 
-### Added log in GUI display
+## Added log in GUI display
 
 When a Z command is converted in *Mx* command, the GUI will display an explanation log message.  
 
@@ -139,7 +145,14 @@ Example for a Pencil Down
 <br>
 <br>
 <br>
+
+# Documents
+
+Directory *docs* contains documents related to this development, but different from the ones in **General**
 <br>
+<br>
+<br>
+
 
 # Remains to be tested
 **_Coolant_** and **_Probe_** features
@@ -147,7 +160,7 @@ Example for a Pencil Down
 <br>
 <br>
 <br>
-<br>
+
 
 # Future developments
 WiFi control.
